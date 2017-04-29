@@ -3,7 +3,7 @@ import java.util.*;
 import java.text.*;
 
 /**
- * Program to peform A* search 
+ * A program that schedules an optimal route for a truck to complete a set of jobs
  *
  * @author Kevin Ni
  */
@@ -26,10 +26,13 @@ public class FreightSystem{
 		new FreightSystem().run(args[0]);
 	}
 
+	AStarRouter router;
+
 	/**
 	 * class constructor
 	 */
 	FreightSystem(){
+		router = new AStarRouter();
 	}
 
 	/**
@@ -43,8 +46,9 @@ public class FreightSystem{
 		try{
 			sc = new Scanner(new FileReader(fin));
 
+			int i = 1;
 			while(sc.hasNextLine()){
-				executeLine(sc.nextLine());
+				executeLine(sc.nextLine(), i++);
 			}
 		}
 		catch(FileNotFoundException e)
@@ -63,10 +67,27 @@ public class FreightSystem{
 	 *
 	 * @param line
 	 * the line of input to be parsed and executed
+	 *
+	 * @param n
+	 * the line number
 	 */
-	void executeLine(String line){
+	void executeLine(String line, int n){
 		String[] input = digest(line);
 		if(input.length == 0) return;
+
+		try{
+			switch(input[0]){
+				case UNLOADING:
+					router.declareNode(input[2], Integer.parseInt(input[1]));
+				case COST:
+					router.declareEdge(input[2], input[3], Integer.parseInt(input[1]));
+				case JOB:
+					router.declareJob(input[1], input[2]);
+			}
+		}
+		catch(NumberFormatException | IndexOutOfBoundsException e){
+			System.err.println(String.format("Line %s not parseable", n));
+		}
 	}
 
 	/**

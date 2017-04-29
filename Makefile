@@ -7,6 +7,8 @@ JC = javac
 
 
 CLASSES = \
+		  FreightSystem.java \
+		  AStarRouter.java \
 
 FILES = $(addprefix src/, $(CLASSES))
 

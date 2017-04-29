@@ -1,4 +1,4 @@
-JFLAGS = -g -d bin -s src -h src -cp bin -sourcepath src
+JFLAGS = -g -d bin -s src -h src -cp bin -sourcepath src -Xlint:unchecked
 JC = javac
 
 .SUFFIXES: .java .class
@@ -9,6 +9,9 @@ JC = javac
 CLASSES = \
 		  FreightSystem.java \
 		  AStarRouter.java \
+		  Node.java \
+		  RoutingState.java \
+		  Job.java
 
 FILES = $(addprefix src/, $(CLASSES))
 

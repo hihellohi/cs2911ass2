@@ -9,9 +9,9 @@ import java.text.*;
  */
 public class FreightSystem{
 
-	static final String UNLOADING = "Unloading";
-	static final String COST = "Cost";
-	static final String JOB = "Job";
+	private static final String UNLOADING = "Unloading";
+	private static final String COST = "Cost";
+	private static final String JOB = "Job";
 
 	/**
 	 * This is the entry point of the program 
@@ -26,12 +26,12 @@ public class FreightSystem{
 		new FreightSystem().run(args[0]);
 	}
 
-	AStarRouter router;
+	private AStarRouter router;
 
 	/**
 	 * class constructor
 	 */
-	FreightSystem(){
+	private FreightSystem(){
 		router = new AStarRouter();
 	}
 
@@ -41,7 +41,7 @@ public class FreightSystem{
 	 * @param fin input file
 	 * @pre fin != null
 	 */
-	void run(String fin){
+	private void run(String fin){
 		Scanner sc = null;
 		try{
 			sc = new Scanner(new FileReader(fin));
@@ -50,6 +50,8 @@ public class FreightSystem{
 			while(sc.hasNextLine()){
 				executeLine(sc.nextLine(), i++);
 			}
+
+			System.out.println(router.run());
 		}
 		catch(FileNotFoundException e)
 		{
@@ -71,7 +73,7 @@ public class FreightSystem{
 	 * @param n
 	 * the line number
 	 */
-	void executeLine(String line, int n){
+	private void executeLine(String line, int n){
 		String[] input = digest(line);
 		if(input.length == 0) return;
 
@@ -102,7 +104,7 @@ public class FreightSystem{
 	 *
 	 * @return s with comments removed and splitted on whitespace
 	 */
-	String[] digest(String s){
+	private String[] digest(String s){
 		String decommented = s.split("#", 2)[0];
 		return decommented.split("\\s+");
 	}

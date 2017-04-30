@@ -10,16 +10,12 @@ public class AStarRouter{
 	private static final String START = "Sydney";
 
 	private Map<String, Node> nodes;
-	private Set<Node> jobEntries;
 	private int totalUnloadingCost;
 	private short nJobs;
 	private int expandedNodes;
-	private UnionFind unionFind;
 
 	public AStarRouter(){
 		nodes = new HashMap<String, Node>();
-		unionFind = new UnionFind();
-		jobEntries = new HashSet<Node>();
 		totalUnloadingCost = 0;
 		nJobs = 0;
 		expandedNodes = 0;
@@ -28,7 +24,6 @@ public class AStarRouter{
 	public void declareNode(String name, int unloadingCost){
 		Node n = new Node(name, unloadingCost);
 		nodes.put(name, n);
-		unionFind.declareNode(n);
 	}
 
 	public void declareEdge(String namea, String nameb, int weight){
@@ -37,8 +32,6 @@ public class AStarRouter{
 
 		nodea.declareEdge(nodeb, weight);
 		nodeb.declareEdge(nodea, weight);
-
-		unionFind.join(nodea, nodeb);
 	}
 
 	public void declareJob(String namea, String nameb){
@@ -47,7 +40,6 @@ public class AStarRouter{
 
 		nodea.declareJob(nodeb, nJobs++);
 		totalUnloadingCost += nodeb.getUnloadingCost();
-		jobEntries.add(nodea);
 	}
 
 	public int getExpandedNodes(){
@@ -55,20 +47,11 @@ public class AStarRouter{
 	}
 
 	public String run(){
-
-		Object sydrep = unionFind.find(nodes.get(START));
-		boolean hasSolution = true;
-		for(Node n : jobEntries){
-			if(unionFind.find(n) != sydrep){
-				hasSolution = false;
-				break;
-			}
-		}
-		if(!hasSolution){
+		RoutingState optimalpath = runAStar();
+		if(optimalpath == null){
 			return "No solution\n";
 		}
 
-		RoutingState optimalpath = runAStar();
 		StringBuilder stringBuilder = new StringBuilder();
 
 		for(RoutingState cur = optimalpath; cur.getPrevState() != null; cur = cur.getPrevState()){
@@ -84,27 +67,26 @@ public class AStarRouter{
 	}
 
 	private RoutingState runAStar(){
-		PriorityQueue<RoutingState> pq = new PriorityQueue<RoutingState>(new Heuristic(nodes));
-		pq.add(new RoutingState(nodes.get(START), nJobs));
-		HashSet<RoutingState> seen = new HashSet<RoutingState>();
+		PriorityQueue<RoutingState> open = new PriorityQueue<RoutingState>(new Heuristic(nodes));
+		open.add(new RoutingState(nodes.get(START), nJobs));
+		HashMap<RoutingState, RoutingState> closed = new HashMap<RoutingState, RoutingState>();
 
-		while(pq.size() > 0){
-			RoutingState cur = pq.poll();
+		while(open.size() > 0){
+			RoutingState cur = open.poll();
 
 			expandedNodes++;
-			if(seen.contains(cur)){
-				//change for astar
+			if(closed.containsKey(cur)){
 				continue;
 			}
 			if(cur.isGoalState()){
 				return cur;
 			}
-			seen.add(cur);
+			closed.put(cur, cur);
 
 			for(Node adj : cur.getAdjacencies()){
-				pq.add(new RoutingState(adj, cur));
+				open.add(new RoutingState(adj, cur));
 			}
 		}
-		return null; //this should never happen!
+		return null; 
 	}
 }

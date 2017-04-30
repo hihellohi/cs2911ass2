@@ -11,7 +11,8 @@ CLASSES = \
 		  AStarRouter.java \
 		  Node.java \
 		  RoutingState.java \
-		  Job.java
+		  Edge.java \
+		  Heuristic.java
 
 FILES = $(addprefix src/, $(CLASSES))
 

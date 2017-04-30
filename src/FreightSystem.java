@@ -51,7 +51,9 @@ public class FreightSystem{
 				executeLine(sc.nextLine(), i++);
 			}
 
-			System.out.println(router.run());
+			String route = router.run();
+			System.out.println(String.format("%d nodes expanded", router.getExpandedNodes()));
+			System.out.print(route);
 		}
 		catch(FileNotFoundException e)
 		{
@@ -81,10 +83,15 @@ public class FreightSystem{
 			switch(input[0]){
 				case UNLOADING:
 					router.declareNode(input[2], Integer.parseInt(input[1]));
+					break;
+
 				case COST:
 					router.declareEdge(input[2], input[3], Integer.parseInt(input[1]));
+					break;
+
 				case JOB:
 					router.declareJob(input[1], input[2]);
+					break;
 			}
 		}
 		catch(NumberFormatException | IndexOutOfBoundsException e){

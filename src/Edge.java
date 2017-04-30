@@ -9,18 +9,18 @@ public class Edge{
 
 	private Node start;
 	private Node end;
-	private int jobId;
+	private boolean isJob;
 	private int weight;
 
 	public Edge(Node start, Node end, int weight){
 		this.start = start;
 		this.end = end;
 		this.weight = weight;
-		this.jobId = -1;
+		this.isJob = false;
 	}
 
-	public void setJobId(int jobId){
-		this.jobId = jobId;
+	public void makeJob(){
+		isJob = true;
 	}
 
 	public Node getStart(){
@@ -31,12 +31,8 @@ public class Edge{
 		return end;
 	}
 
-	public boolean isJob(){
-		return jobId != -1;
-	}
-
-	public int getJobId(){
-		return jobId;
+	public boolean getIsJob(){
+		return isJob;
 	}
 
 	public int getWeight(){

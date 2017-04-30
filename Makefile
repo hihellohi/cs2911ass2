@@ -12,7 +12,8 @@ CLASSES = \
 		  Node.java \
 		  RoutingState.java \
 		  Edge.java \
-		  Heuristic.java
+		  Heuristic.java \
+		  UnionFind.java
 
 FILES = $(addprefix src/, $(CLASSES))
 

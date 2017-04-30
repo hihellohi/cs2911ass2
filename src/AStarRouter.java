@@ -7,20 +7,28 @@ import java.util.*;
  */
 public class AStarRouter{
 
+	private static final String START = "Sydney";
+
 	private Map<String, Node> nodes;
+	private Set<Node> jobEntries;
 	private int totalUnloadingCost;
 	private short nJobs;
 	private int expandedNodes;
+	private UnionFind unionFind;
 
 	public AStarRouter(){
 		nodes = new HashMap<String, Node>();
+		unionFind = new UnionFind();
+		jobEntries = new HashSet<Node>();
 		totalUnloadingCost = 0;
 		nJobs = 0;
 		expandedNodes = 0;
 	}
 
 	public void declareNode(String name, int unloadingCost){
-		nodes.put(name, new Node(name, unloadingCost));
+		Node n = new Node(name, unloadingCost);
+		nodes.put(name, n);
+		unionFind.declareNode(n);
 	}
 
 	public void declareEdge(String namea, String nameb, int weight){
@@ -29,6 +37,8 @@ public class AStarRouter{
 
 		nodea.declareEdge(nodeb, weight);
 		nodeb.declareEdge(nodea, weight);
+
+		unionFind.join(nodea, nodeb);
 	}
 
 	public void declareJob(String namea, String nameb){
@@ -37,6 +47,7 @@ public class AStarRouter{
 
 		nodea.declareJob(nodeb, nJobs++);
 		totalUnloadingCost += nodeb.getUnloadingCost();
+		jobEntries.add(nodea);
 	}
 
 	public int getExpandedNodes(){
@@ -44,6 +55,19 @@ public class AStarRouter{
 	}
 
 	public String run(){
+
+		Object sydrep = unionFind.find(nodes.get(START));
+		boolean hasSolution = true;
+		for(Node n : jobEntries){
+			if(unionFind.find(n) != sydrep){
+				hasSolution = false;
+				break;
+			}
+		}
+		if(!hasSolution){
+			return "No solution\n";
+		}
+
 		RoutingState optimalpath = runAStar();
 		StringBuilder stringBuilder = new StringBuilder();
 
@@ -61,8 +85,9 @@ public class AStarRouter{
 
 	private RoutingState runAStar(){
 		PriorityQueue<RoutingState> pq = new PriorityQueue<RoutingState>(new Heuristic(nodes));
-		pq.add(new RoutingState(nodes.get("Sydney"), nJobs));
+		pq.add(new RoutingState(nodes.get(START), nJobs));
 		HashSet<RoutingState> seen = new HashSet<RoutingState>();
+
 		while(pq.size() > 0){
 			RoutingState cur = pq.poll();
 

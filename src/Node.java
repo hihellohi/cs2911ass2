@@ -23,15 +23,19 @@ public class Node{
 
 	public void declareJob(Node other, int jobId){
 		Edge newJob = adjacent.get(other);
-		newJob.setJobId(jobId);
+		newJob.makeJob();
+	}
+
+	public Edge getEdge(Node other){
+		return adjacent.get(other);
 	}
 
 	public int getEdgeWeight(Node other){
 		return adjacent.get(other).getWeight();
 	}
 	
-	public int getJob(Node other){
-		return adjacent.get(other).getJobId();
+	public boolean isJobEdge(Node other){
+		return adjacent.get(other).getIsJob();
 	}
 
 	public Iterable<Node> getAdjacencies(){

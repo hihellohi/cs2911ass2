@@ -10,14 +10,14 @@ public class RoutingState{
 	private RoutingState prevState;
 	private Node curNode;
 	private int len;
-	private int[] jobsDone;
+	private Collection<Edge> jobsDone;
 	private short nJobs;
 	private boolean completedJobFlag;
 
 	public RoutingState(Node start, short nJobs){
 		prevState = null;
 		curNode = start;
-		jobsDone = new int[(nJobs + 31)/32]; //ceiling(nJobs/32)
+		jobsDone = new HashSet<Edge>();
 		len = 0;
 		completedJobFlag = false;
 		this.nJobs = nJobs;
@@ -27,38 +27,60 @@ public class RoutingState{
 		prevState = prev;
 		curNode = cur;
 		jobsDone = prev.getJobsDone();
-		completedJobFlag = false;
 		nJobs = prev.getNJobs();
-
 		len = prev.len + prev.getEdgeWeight(cur);
 
-		int completedJobId = prev.getJobId(cur);
-		if(completedJobId != -1){
-			jobsDone[completedJobId / 32] |= 1 << (completedJobId % 32);
+		if(prev.isJobEdge(cur) && !jobsDone.contains(cur)){
+			jobsDone = new HashSet<Edge>(jobsDone);
+			jobsDone.add(prev.getEdge(cur));
 			completedJobFlag = true;
+		}
+		else{
+			completedJobFlag = false;
 		}
 	}
 
-	public boolean isGoalState(){
-		if(nJobs == 0){
-			return true;
-		}
-
-		int i;
-		for(i = 0; i < jobsDone.length - 1; i++){
-			if(jobsDone[i] != -1){
+	@Override public boolean equals(Object obj) {
+		if(obj instanceof RoutingState){
+			RoutingState other = (RoutingState)obj;
+			if(other.curNode != curNode){
 				return false;
 			}
+
+			Collection<Edge> otherJobsDone = other.getJobsDone();
+			if(otherJobsDone.size() != jobsDone.size()){
+				return false;
+			}
+
+			for(Edge job : otherJobsDone){
+				if(!jobsDone.contains(job)){
+					return false;
+				}
+			}
+			return true;
 		}
-		return jobsDone[i] == (1 << (nJobs % 32)) - 1;
+		return false;
+	}
+
+	@Override public int hashCode() {
+		int hash = 982451653;
+		for(Edge job : jobsDone){
+			hash += job.hashCode();
+		}
+		hash = Objects.hash(hash, curNode.hashCode());
+		return hash;
+	}
+
+	public boolean isGoalState(){
+		return jobsDone.size() == nJobs;
 	}
 
 	public Iterable<Node> getAdjacencies(){
 		return curNode.getAdjacencies();
 	}
 
-	public int[] getJobsDone(){
-		return jobsDone.clone();
+	public Collection<Edge> getJobsDone(){
+		return jobsDone;
 	}
 
 	public short getNJobs(){
@@ -81,42 +103,19 @@ public class RoutingState{
 		return prevState;
 	}
 
+	public Edge getEdge(Node cur){
+		return curNode.getEdge(cur);
+	}
+
 	public int getEdgeWeight(Node cur){
 		return curNode.getEdgeWeight(cur);
 	}
 
-	public int getJobId(Node cur){
-		return curNode.getJob(cur);
+	public boolean isJobEdge(Node cur){
+		return curNode.isJobEdge(cur);
 	}
 
 	public String nodeName(){
 		return curNode.getName();
-	}
-
-	@Override public boolean equals(Object obj) {
-		if(obj instanceof RoutingState){
-			RoutingState other = (RoutingState)obj;
-			if(other.curNode != curNode){
-				return false;
-			}
-
-			for(int i = 0; i < jobsDone.length; i++){
-				if(jobsDone[i] != other.jobsDone[i]){
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
-	}
-
-	@Override public int hashCode() {
-		int hash = curNode.hashCode() * 17;
-		int factor = 31;
-		for(int i = 0; i < jobsDone.length; i++){
-			hash += jobsDone[i] * factor;
-			factor *= 31;
-		}
-		return hash;
 	}
 }

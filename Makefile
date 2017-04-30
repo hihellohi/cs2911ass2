@@ -13,6 +13,7 @@ CLASSES = \
 		  RoutingState.java \
 		  Edge.java \
 		  Heuristic.java \
+		  OpenList.java
 
 FILES = $(addprefix src/, $(CLASSES))
 

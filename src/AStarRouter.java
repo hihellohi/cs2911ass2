@@ -11,13 +11,15 @@ public class AStarRouter{
 
 	private Map<String, Node> nodes;
 	private int totalUnloadingCost;
-	private short nJobs;
+	private int jobsLeft;
 	private int expandedNodes;
+	private Heuristic heuristic;
 
 	public AStarRouter(){
 		nodes = new HashMap<String, Node>();
+		heuristic = new Heuristic();
 		totalUnloadingCost = 0;
-		nJobs = 0;
+		jobsLeft = 0;
 		expandedNodes = 0;
 	}
 
@@ -38,7 +40,7 @@ public class AStarRouter{
 		Node nodea = nodes.get(namea);
 		Node nodeb = nodes.get(nameb);
 
-		nodea.declareJob(nodeb, nJobs++);
+		jobsLeft += nodea.declareJob(nodeb);
 		totalUnloadingCost += nodeb.getUnloadingCost();
 	}
 
@@ -61,30 +63,37 @@ public class AStarRouter{
 						cur.nodeName()));
 		}
 
-		stringBuilder.insert(0, String.format("cost = %d\n", optimalpath.getLen() + totalUnloadingCost));
+		stringBuilder.insert(0, String.format("cost = %d\n", optimalpath.getPathLen() + totalUnloadingCost));
 
 		return stringBuilder.toString();
 	}
 
 	private RoutingState runAStar(){
-		PriorityQueue<RoutingState> open = new PriorityQueue<RoutingState>(new Heuristic(nodes));
-		open.add(new RoutingState(nodes.get(START), nJobs));
-		HashMap<RoutingState, RoutingState> closed = new HashMap<RoutingState, RoutingState>();
+		HashMap<RoutingState, Integer> closed = new HashMap<RoutingState, Integer>();
+		OpenList open = new OpenList(heuristic);
+		open.insert(new RoutingState(nodes.get(START), jobsLeft));
 
 		while(open.size() > 0){
 			RoutingState cur = open.poll();
 
 			expandedNodes++;
-			if(closed.containsKey(cur)){
-				continue;
-			}
 			if(cur.isGoalState()){
 				return cur;
 			}
-			closed.put(cur, cur);
+			closed.put(cur, new Integer(cur.getPathLen()));
 
 			for(Node adj : cur.getAdjacencies()){
-				open.add(new RoutingState(adj, cur));
+				RoutingState newState = new RoutingState(adj, cur);
+				int pathLen = newState.getPathLen();
+				if(closed.containsKey(newState)){
+					if(closed.get(newState).intValue() > pathLen){
+						closed.remove(newState);
+						open.insert(newState);
+					}
+				}
+				else{
+					open.updateIfBetter(newState);
+				}
 			}
 		}
 		return null; 

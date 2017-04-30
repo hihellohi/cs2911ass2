@@ -9,31 +9,33 @@ public class RoutingState{
 
 	private RoutingState prevState;
 	private Node curNode;
-	private int len;
+	private int pathLen;
+	private int heuristicCache;
 	private Collection<Edge> jobsDone;
-	private short nJobs;
 	private boolean completedJobFlag;
 
-	public RoutingState(Node start, short nJobs){
+	public RoutingState(Node start, int heuristicCache){
 		prevState = null;
 		curNode = start;
 		jobsDone = new HashSet<Edge>();
-		len = 0;
+		pathLen = 0;
 		completedJobFlag = false;
-		this.nJobs = nJobs;
+		this.heuristicCache = heuristicCache;
 	}
 
 	public RoutingState(Node cur, RoutingState prev){
 		prevState = prev;
 		curNode = cur;
 		jobsDone = prev.getJobsDone();
-		nJobs = prev.getNJobs();
-		len = prev.len + prev.getEdgeWeight(cur);
+		heuristicCache = prev.getHeuristicCache();
+		int lastStepWeight = prev.getEdgeWeight(cur);
+		pathLen = prev.pathLen + lastStepWeight;
 
 		if(prev.isJobEdge(cur) && !jobsDone.contains(cur)){
 			jobsDone = new HashSet<Edge>(jobsDone);
 			jobsDone.add(prev.getEdge(cur));
 			completedJobFlag = true;
+			heuristicCache -= lastStepWeight;
 		}
 		else{
 			completedJobFlag = false;
@@ -48,6 +50,9 @@ public class RoutingState{
 			}
 
 			Collection<Edge> otherJobsDone = other.getJobsDone();
+			if(otherJobsDone == jobsDone){
+				return true;
+			}
 			if(otherJobsDone.size() != jobsDone.size()){
 				return false;
 			}
@@ -72,7 +77,7 @@ public class RoutingState{
 	}
 
 	public boolean isGoalState(){
-		return jobsDone.size() == nJobs;
+		return heuristicCache == 0;
 	}
 
 	public Iterable<Node> getAdjacencies(){
@@ -83,16 +88,16 @@ public class RoutingState{
 		return jobsDone;
 	}
 
-	public short getNJobs(){
-		return nJobs;
+	public int getHeuristicCache(){
+		return heuristicCache;
 	}
 
 	public Node getCurNode(){
 		return curNode;
 	}
 
-	public int getLen(){
-		return len;
+	public int getPathLen(){
+		return pathLen;
 	}
 
 	public boolean justCompletedJob(){

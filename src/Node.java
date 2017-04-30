@@ -21,9 +21,10 @@ public class Node{
 		adjacent.put(other, new Edge(this, other, weight));
 	}
 
-	public void declareJob(Node other, int jobId){
+	public int declareJob(Node other){
 		Edge newJob = adjacent.get(other);
 		newJob.makeJob();
+		return newJob.getWeight();
 	}
 
 	public Edge getEdge(Node other){

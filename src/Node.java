@@ -21,24 +21,10 @@ public class Node{
 		adjacent.put(other, new Edge(this, other, weight));
 	}
 
-	public int declareJob(Node other){
-		Edge newJob = adjacent.get(other);
-		newJob.makeJob();
-		return newJob.getWeight();
-	}
-
 	public Edge getEdge(Node other){
 		return adjacent.get(other);
 	}
-
-	public int getEdgeWeight(Node other){
-		return adjacent.get(other).getWeight();
-	}
 	
-	public boolean isJobEdge(Node other){
-		return adjacent.get(other).getIsJob();
-	}
-
 	public Iterable<Node> getAdjacencies(){
 		return adjacent.keySet();
 	}

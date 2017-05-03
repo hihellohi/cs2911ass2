@@ -5,10 +5,10 @@ import java.util.*;
  *
  * @author Kevin Ni
  */
-public class Heuristic implements Comparator<RoutingState>{
-	public int compare(RoutingState a, RoutingState b){
-		int costA = a.getPathLen() + a.getHeuristicCache();
-		int costB = b.getPathLen() + b.getHeuristicCache();
+public class Heuristic implements Comparator<State>{
+	public int compare(State a, State b){
+		int costA = a.getPathLen() + a.getRemainingJobLength();
+		int costB = b.getPathLen() + b.getRemainingJobLength();
 		if(costA < costB){
 			return -1;
 		}

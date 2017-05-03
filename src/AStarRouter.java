@@ -10,16 +10,16 @@ public class AStarRouter{
 	private static final String START = "Sydney";
 
 	private Map<String, Node> nodes;
-	private int totalUnloadingCost;
-	private int jobsLeft;
+	private Set<Edge> jobs;
 	private int expandedNodes;
+	private int totalUnloadingCost;
 	private Heuristic heuristic;
 
 	public AStarRouter(){
 		nodes = new HashMap<String, Node>();
 		heuristic = new Heuristic();
+		jobs = new HashSet<Edge>();
 		totalUnloadingCost = 0;
-		jobsLeft = 0;
 		expandedNodes = 0;
 	}
 
@@ -40,7 +40,7 @@ public class AStarRouter{
 		Node nodea = nodes.get(namea);
 		Node nodeb = nodes.get(nameb);
 
-		jobsLeft += nodea.declareJob(nodeb);
+		jobs.add(nodea.getEdge(nodeb));
 		totalUnloadingCost += nodeb.getUnloadingCost();
 	}
 
@@ -49,14 +49,14 @@ public class AStarRouter{
 	}
 
 	public String run(){
-		RoutingState optimalpath = runAStar();
+		State optimalpath = runAStar();
 		if(optimalpath == null){
 			return "No solution\n";
 		}
 
 		StringBuilder stringBuilder = new StringBuilder();
 
-		for(RoutingState cur = optimalpath; cur.getPrevState() != null; cur = cur.getPrevState()){
+		for(State cur = optimalpath; cur.getPrevState() != null; cur = cur.getPrevState()){
 			stringBuilder.insert(0, String.format("%s %s to %s\n",
 						cur.justCompletedJob() ? "Job" : "Empty",
 						cur.getPrevState().nodeName(),
@@ -68,13 +68,13 @@ public class AStarRouter{
 		return stringBuilder.toString();
 	}
 
-	private RoutingState runAStar(){
-		HashMap<RoutingState, Integer> closed = new HashMap<RoutingState, Integer>();
+	private State runAStar(){
+		HashMap<State, Integer> closed = new HashMap<State, Integer>();
 		OpenList open = new OpenList(heuristic);
-		open.insert(new RoutingState(nodes.get(START), jobsLeft));
+		open.insert(new State(nodes.get(START), jobs));
 
 		while(open.size() > 0){
-			RoutingState cur = open.poll();
+			State cur = open.poll();
 
 			expandedNodes++;
 			if(cur.isGoalState()){
@@ -83,7 +83,7 @@ public class AStarRouter{
 			closed.put(cur, new Integer(cur.getPathLen()));
 
 			for(Node adj : cur.getAdjacencies()){
-				RoutingState newState = new RoutingState(adj, cur);
+				State newState = new State(adj, cur);
 				int pathLen = newState.getPathLen();
 				if(closed.containsKey(newState)){
 					if(closed.get(newState).intValue() > pathLen){

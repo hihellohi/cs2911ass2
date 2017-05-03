@@ -6,15 +6,15 @@ import java.util.*;
  * @author Kevin Ni
  */
 public class OpenList{
-	HashMap<RoutingState, Integer> scores;
-	PriorityQueue<RoutingState> queue;
+	HashMap<State, Integer> scores;
+	PriorityQueue<State> queue;
 
-	public OpenList(Comparator<RoutingState> comp){
-		scores = new HashMap<RoutingState, Integer>();
-		queue = new PriorityQueue<RoutingState>(comp);
+	public OpenList(Comparator<State> comp){
+		scores = new HashMap<State, Integer>();
+		queue = new PriorityQueue<State>(comp);
 	}
 	
-	public boolean contains(RoutingState s){
+	public boolean contains(State s){
 		return scores.containsKey(s);
 	}
 
@@ -22,13 +22,13 @@ public class OpenList{
 		return queue.size();
 	}
 
-	public RoutingState poll(){
-		RoutingState out = queue.poll();
+	public State poll(){
+		State out = queue.poll();
 		scores.remove(out);
 		return out;
 	}
 
-	public void updateIfBetter(RoutingState s){
+	public void updateIfBetter(State s){
 		if(contains(s)){
 			if(s.getPathLen() < scores.get(s).intValue()){
 				queue.remove(s);
@@ -40,7 +40,7 @@ public class OpenList{
 		}
 	}
 
-	public void insert(RoutingState s){
+	public void insert(State s){
 		scores.put(s, new Integer(s.getPathLen()));
 		queue.add(s);
 	}

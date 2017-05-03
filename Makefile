@@ -7,10 +7,10 @@ JC = javac
 
 
 CLASSES = \
+		  State.java \
 		  FreightSystem.java \
 		  AStarRouter.java \
 		  Node.java \
-		  RoutingState.java \
 		  Edge.java \
 		  Heuristic.java \
 		  OpenList.java

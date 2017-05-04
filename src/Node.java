@@ -43,7 +43,7 @@ public class Node{
 	/**
 	 * gets an edge that starts from this node
 	 *
-	 * @param other the edstination of the edge
+	 * @param other the destination of the edge
 	 *
 	 * @return null if no such edge exists, the edge if it does
 	 *

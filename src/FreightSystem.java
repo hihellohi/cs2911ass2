@@ -6,6 +6,8 @@ import java.text.*;
  * A program that schedules an optimal route for a truck to complete a set of jobs
  *
  * @author Kevin Ni
+ *
+ * @inv router != null
  */
 public class FreightSystem{
 

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>9</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>738</x>
+      <y>558</y>
+      <w>279</w>
+      <h>315</h>
+    </coordinates>
+    <panel_attributes>State
+--
+-prevState: State
+-curNode: Node
+-pathLen: int
+-remainingJobLength: int
+-jobsToDo: Set&lt;Edge&gt;
+-completedJobFlag: boolean
+--
++State(Node start, Set&lt;Edge&gt; jobsToDo): ctor
++State(Node cur, State prev): ctor
++equals(Object obj): boolean
++hashCode(): int
++isGoalState(): boolean
++getAdjacencies(): Iterable&lt;Node&gt;
++getJobsToDo(): Set&lt;Edge&gt;
++getRemainingJobLength(): int
++getCurNode(): Node
++getPathLen(): int
++justCompletedJob(): boolean
++getPrevState(): State
++getEdge(Node cur): Edge
++nodeName(): String
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1008</x>
+      <y>180</y>
+      <w>351</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>AStarRouter
+--
+-nodes: Map&lt;String, Node&gt;
+-jobs: Set&lt;Edge&gt;
+-expandedNodes: int
+-totalUnloadingCost: int
+-heuristic: Heuristic
+--
++AStarRouter(): ctor
++declareNode(String name, int unloadingCost): void
++declareEdge(String namea, String nameb, int weight): void
++declareJob(String namea, String nameb): void
++getExpandedNodes(): int
++run(): String
+-runAStar(): State
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1071</x>
+      <y>0</y>
+      <w>216</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>FreightSystem
+--
+-router: AStarRouter
+--
+-FreightSystem(): ctor
++main(String[] args): void
+-run(String fin): void
+-executeLine(String line, int n): void
+-digest(String s): String[]
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1467</x>
+      <y>387</y>
+      <w>261</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>Node
+--
+-adjacent: Map&lt;Node, Edge&gt;
+-name: String
+-unloadingCost: int
+--
++Node(String name, int unloadingCost): ctor
++declareEdge(Node other, int weight): void
++getEdge(Node other): Edge
++getAdjacencies(): Iterable&lt;Node&gt;
++getName(): String
++getUnloadingCost(): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>693</x>
+      <y>306</y>
+      <w>207</w>
+      <h>162</h>
+    </coordinates>
+    <panel_attributes>OpenList
+--
+~scores: HashMap&lt;State, Integer&gt;
+~queue: PriorityQueue&lt;State&gt;
+~heuristic: Heuristic
+--
++OpenList(Heuristic heuristic): ctor
++contains(State s): boolean
++size(): int
++poll(): State
++updateIfBetter(State s): void
++insert(State s): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1269</x>
+      <y>612</y>
+      <w>144</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>Edge
+--
+-weight: int
+--
++Edge(int weight): ctor
++getWeight(): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>477</x>
+      <y>441</y>
+      <w>189</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>JobHeuristic
+--
++compare(State a, State b): int
++heuristicValue(State s): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1161</x>
+      <y>108</y>
+      <w>27</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>225</y>
+      <w>234</w>
+      <h>99</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;90.0;10.0;10.0;240.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>918</x>
+      <y>315</y>
+      <w>108</w>
+      <h>261</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;270.0;10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>792</x>
+      <y>459</y>
+      <w>27</w>
+      <h>117</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>180</y>
+      <w>468</w>
+      <h>81</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>500.0;10.0;10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2367</x>
+      <y>216</y>
+      <w>171</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;170.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1008</x>
+      <y>639</y>
+      <w>279</w>
+      <h>27</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;290.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1404</x>
+      <y>540</y>
+      <w>126</w>
+      <h>126</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>120.0;10.0;120.0;120.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1350</x>
+      <y>225</y>
+      <w>261</w>
+      <h>180</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;270.0;10.0;270.0;180.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1008</x>
+      <y>540</y>
+      <w>621</w>
+      <h>207</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;210.0;670.0;210.0;670.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>486</y>
+      <w>198</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>200.0;170.0;10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1332</x>
+      <y>378</y>
+      <w>27</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>477</x>
+      <y>243</y>
+      <w>189</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;Interface&gt;&gt;
+Heuristic
+--
++heuristicValue(State s): int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>288</y>
+      <w>27</w>
+      <h>171</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;170.0</additional_attributes>
+  </element>
+</diagram>

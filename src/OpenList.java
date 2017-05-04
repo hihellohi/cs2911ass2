@@ -4,20 +4,44 @@ import java.util.*;
  * Data structure used for the open list of an A* search
  *
  * @author Kevin Ni
+ *
+ * @inv scores != null
+ * @inv queue != null
  */
 public class OpenList{
 	HashMap<State, Integer> scores;
 	PriorityQueue<State> queue;
+	Heuristic heuristic;
 
-	public OpenList(Comparator<State> comp){
+	/**
+	 * class constructor
+	 *
+	 * @param comp the comparator to be used
+	 *
+	 * @pre comp != null
+	 */
+	public OpenList(Heuristic heuristic){
 		scores = new HashMap<State, Integer>();
-		queue = new PriorityQueue<State>(comp);
+		queue = new PriorityQueue<State>(heuristic);
+		this.heuristic = heuristic;
 	}
 	
+	/**
+	 * check if the list contains a state
+	 *
+	 * @param s the state that is to be checked
+	 *
+	 * @return true if the list constains s false if not
+	 */
 	public boolean contains(State s){
 		return scores.containsKey(s);
 	}
 
+	/**
+	 * returns the size of the list
+	 *
+	 * @return the size of the list 
+	 */
 	public int size(){
 		return queue.size();
 	}
@@ -30,7 +54,7 @@ public class OpenList{
 
 	public void updateIfBetter(State s){
 		if(contains(s)){
-			if(s.getPathLen() < scores.get(s).intValue()){
+			if(heuristic.heuristicValue(s) < scores.get(s).intValue()){
 				queue.remove(s);
 				insert(s);
 			}
@@ -41,7 +65,7 @@ public class OpenList{
 	}
 
 	public void insert(State s){
-		scores.put(s, new Integer(s.getPathLen()));
+		scores.put(s, new Integer(heuristic.heuristicValue(s)));
 		queue.add(s);
 	}
 }

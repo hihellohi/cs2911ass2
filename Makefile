@@ -13,6 +13,7 @@ CLASSES = \
 		  Node.java \
 		  Edge.java \
 		  Heuristic.java \
+		  JobsHeuristic.java \
 		  OpenList.java
 
 FILES = $(addprefix src/, $(CLASSES))

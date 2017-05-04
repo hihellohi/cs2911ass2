@@ -1,30 +1,29 @@
 import java.util.*;
 
 /**
- * Represents a link in the network 
+ * Represents a directed link in the network 
  *
  * @author Kevin Ni
  */
 public class Edge{
 
-	private Node start;
-	private Node end;
 	private int weight;
 
-	public Edge(Node start, Node end, int weight){
-		this.start = start;
-		this.end = end;
+	/**
+	 * Class constructor
+	 *
+	 * @param weight weight of the link
+	 *
+	 */
+	public Edge(int weight){
 		this.weight = weight;
 	}
 
-	public Node getStart(){
-		return start;
-	}
-
-	public Node getEnd(){
-		return end;
-	}
-
+	/**
+	 * gets the weight of the edge
+	 *
+	 * @return the weight of the edge
+	 */
 	public int getWeight(){
 		return weight;
 	}

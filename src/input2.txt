@@ -1,0 +1,6 @@
+#impossible case
+Unloading 1 Sydney
+Unloading 1 A
+Unloading 1 B
+Cost 1 A B
+Job A B
